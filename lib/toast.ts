@@ -1,10 +1,6 @@
 import { toast } from "react-hot-toast"
 
-/**
- * Generic notify — takes 1 or 2 arguments.
- * notify("Saved!") -> success
- * notify("Failed!", "error") -> error
- */
+// Flexible notify (supports 1 or 2 args)
 export function notify(message: string, type: "success" | "error" = "success") {
   if (type === "error") {
     toast.error(message)
@@ -13,7 +9,7 @@ export function notify(message: string, type: "success" | "error" = "success") {
   }
 }
 
-// Explicit helpers for pages that still import these
+// Explicit helpers for pages still importing them
 export function notifyError(message: string) {
   toast.error(message)
 }
