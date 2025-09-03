@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import api from "@/lib/api"; // central axios instance
-import { notify } from "@/lib/toast"; // ✅ unified notify
+import { notify } from "@/lib/toast"; // ✅ unified notify object
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,11 +20,11 @@ export default function LoginPage() {
       const data = res.data;
 
       if (!data?.token) {
-        notify(data.error || "Login failed", "error");
+        notify.error(data.error || "Login failed");
         return;
       }
 
-      notify("Login successful!", "success");
+      notify.success("Login successful!");
 
       // ✅ Store session
       localStorage.setItem("token", data.token);
@@ -39,7 +39,7 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      notify("Server error. Please try again.", "error");
+      notify.error(err?.response?.data?.error || "Server error. Please try again.");
     } finally {
       setLoading(false);
     }
