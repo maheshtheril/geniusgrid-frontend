@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import api from "@/lib/api"; // central axios instance
-import { notifySuccess, notifyError } from "@/lib/toast";
+import { notify } from "@/lib/toast"; // ✅ unified notify
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,11 +20,11 @@ export default function LoginPage() {
       const data = res.data;
 
       if (!data?.token) {
-        notifyError(data.error || "Login failed");
+        notify(data.error || "Login failed", "error");
         return;
       }
 
-      notifySuccess("Login successful!");
+      notify("Login successful!", "success");
 
       // ✅ Store session
       localStorage.setItem("token", data.token);
@@ -39,19 +39,19 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      notifyError("Server error. Please try again.");
+      notify("Server error. Please try again.", "error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex min-h-screen items-center justify-center bg-background">
       <form
         onSubmit={handleLogin}
         className="w-full max-w-sm space-y-4 rounded-lg bg-card p-6 shadow"
       >
-        <h1 className="text-xl font-bold text-center">Login</h1>
+        <h1 className="text-center text-xl font-bold">Login</h1>
 
         {/* Tenant Slug field */}
         <input

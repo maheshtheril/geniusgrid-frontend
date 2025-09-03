@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";        // ✅ default import
-import Topbar from "@/components/Topbar";          // ✅ default import
-import Breadcrumbs from "@/components/Breadcrumbs"; // ✅ default import
-import ThemeProvider from "@/components/theme-provider"; // ✅ default export
+import Sidebar from "@/components/Sidebar";
+import Topbar from "@/components/Topbar";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { ThemeProvider } from "@/components/theme-provider"; // ✅ FIXED
 
 export default function DashboardLayout({
   children,
