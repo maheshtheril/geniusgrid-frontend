@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
-import { notify } from "@/lib/toast";
+import { notify, notifyError, notifySuccess } from "@/lib/toast"
 
 export default function RolesPage() {
   const [roles, setRoles] = useState<any[]>([]);

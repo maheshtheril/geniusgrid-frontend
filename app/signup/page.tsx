@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import api from "@/lib/api";
-import { notifyError, notifySuccess } from "@/lib/toast";
+import { notify, notifyError, notifySuccess } from "@/lib/toast"
+
 import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {

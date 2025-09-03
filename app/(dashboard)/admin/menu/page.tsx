@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
-import { notify } from "@/lib/toast";
+import { notify, notifyError, notifySuccess } from "@/lib/toast"
+
 
 export default function MenuPage() {
   const [items, setItems] = useState<any[]>([]);
