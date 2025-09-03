@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import api from "@/lib/api";
-import { notify, notifyError, notifySuccess } from "@/lib/toast"
-
-import { Loader2 } from "lucide-react";
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
+import api from "@/lib/api"
+import { notify } from "@/lib/toast"
+import { Loader2 } from "lucide-react"
 
 export default function SignupPage() {
-  const [tenantName, setTenantName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [email, setEmail] = useState("");
-  const [region] = useState("asia"); // default region
-  const [plan] = useState("free");   // default plan
-  const [loading, setLoading] = useState(false);
+  const [tenantName, setTenantName] = useState("")
+  const [slug, setSlug] = useState("")
+  const [email, setEmail] = useState("")
+  const [region] = useState("asia") // default region
+  const [plan] = useState("free")   // default plan
+  const [loading, setLoading] = useState(false)
 
   async function handleSignup(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
+
     try {
       // 1️⃣ Create tenant + company + admin
       const tenantRes = await api.post("/admin/tenants", {
@@ -26,9 +26,9 @@ export default function SignupPage() {
         slug,
         region,
         plan,
-      });
+      })
 
-      const { tenant_id, user_id } = tenantRes.data;
+      const { tenant_id, user_id } = tenantRes.data
 
       // 2️⃣ Create credentials for admin user
       await api.post("/auth/signup", {
@@ -36,15 +36,15 @@ export default function SignupPage() {
         user_id,
         email,
         password: "Admin@123", // you can also add password field in form
-      });
+      })
 
-      notifySuccess("Tenant created! Redirecting to login...");
-      setTimeout(() => (window.location.href = "/login"), 1000);
+      notify.success("Tenant created! Redirecting to login...")
+      setTimeout(() => (window.location.href = "/login"), 1000)
     } catch (err: any) {
-      console.error(err);
-      notifyError("Signup failed. Try again.");
+      console.error(err)
+      notify.error("Signup failed. Try again.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -52,8 +52,16 @@ export default function SignupPage() {
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-950">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl dark:bg-slate-900">
         <div className="flex flex-col items-center text-center">
-          <Image src="/logo.png" alt="GeniusGrid Logo" width={60} height={60} className="mb-4" />
-          <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">Create your GeniusGrid Workspace</h1>
+          <Image
+            src="/logo.png"
+            alt="GeniusGrid Logo"
+            width={60}
+            height={60}
+            className="mb-4"
+          />
+          <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            Create your GeniusGrid Workspace
+          </h1>
           <p className="mt-2 text-slate-600 dark:text-slate-300">
             Each signup creates a new Tenant, Company, and Admin user 🚀
           </p>
@@ -93,9 +101,11 @@ export default function SignupPage() {
 
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 hover:underline">Login</Link>
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>
         </p>
       </div>
     </main>
-  );
+  )
 }

@@ -1,26 +1,25 @@
-"use client";
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import { notify, notifyError, notifySuccess } from "@/lib/toast"
-
+"use client"
+import { useEffect, useState } from "react"
+import api from "@/lib/api"
+import { notify } from "@/lib/toast"
 
 export default function MenuPage() {
-  const [items, setItems] = useState<any[]>([]);
-  const [label, setLabel] = useState("");
+  const [items, setItems] = useState<any[]>([])
+  const [label, setLabel] = useState("")
 
   useEffect(() => {
-    api.get("/admin/menu").then((res) => setItems(res.data));
-  }, []);
+    api.get("/admin/menu").then((res) => setItems(res.data))
+  }, [])
 
   async function addMenu(e: any) {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const res = await api.post("/admin/menu", { label });
-      setItems([...items, res.data]);
-      setLabel("");
-      notify("Menu item added!");
+      const res = await api.post("/admin/menu", { label })
+      setItems([...items, res.data])
+      setLabel("")
+      notify.success("Menu item added!")
     } catch {
-      notify("Error adding menu", "error");
+      notify.error("Error adding menu")
     }
   }
 
@@ -49,5 +48,5 @@ export default function MenuPage() {
         ))}
       </ul>
     </div>
-  );
+  )
 }

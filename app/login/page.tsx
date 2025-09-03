@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { notifyError, notifySuccess } from "@/lib/toast"
+import { notify } from "@/lib/toast"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -26,11 +26,11 @@ export default function LoginPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        notifyError(data.error || "Login failed")
+        notify.error(data.error || "Login failed")
         return
       }
 
-      notifySuccess("Login successful!")
+      notify.success("Login successful!")
 
       // Store JWT token for authenticated requests
       localStorage.setItem("token", data.token)
@@ -39,7 +39,7 @@ export default function LoginPage() {
       // Redirect to dashboard
       window.location.href = "/dashboard"
     } catch (err) {
-      notifyError("Server error. Please try again.")
+      notify.error("Server error. Please try again.")
     } finally {
       setLoading(false)
     }

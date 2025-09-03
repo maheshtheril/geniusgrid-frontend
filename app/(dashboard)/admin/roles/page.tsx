@@ -1,25 +1,25 @@
-"use client";
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import { notify, notifyError, notifySuccess } from "@/lib/toast"
+"use client"
+import { useEffect, useState } from "react"
+import api from "@/lib/api"
+import { notify } from "@/lib/toast"
 
 export default function RolesPage() {
-  const [roles, setRoles] = useState<any[]>([]);
-  const [name, setName] = useState("");
+  const [roles, setRoles] = useState<any[]>([])
+  const [name, setName] = useState("")
 
   useEffect(() => {
-    api.get("/admin/roles").then((res) => setRoles(res.data));
-  }, []);
+    api.get("/admin/roles").then((res) => setRoles(res.data))
+  }, [])
 
   async function createRole(e: any) {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const res = await api.post("/admin/roles", { name });
-      setRoles([...roles, res.data]);
-      setName("");
-      notify("Role created!");
+      const res = await api.post("/admin/roles", { name })
+      setRoles([...roles, res.data])
+      setName("")
+      notify.success("Role created!")
     } catch {
-      notify("Error creating role", "error");
+      notify.error("Error creating role")
     }
   }
 
@@ -48,5 +48,5 @@ export default function RolesPage() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
