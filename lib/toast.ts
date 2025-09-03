@@ -3,9 +3,14 @@
 import { toast } from "sonner"
 
 // ✅ General purpose
-export function notify(message: string) {
-  toast(message)
+export function notify(message: string, type: "success" | "error" = "success") {
+  if (type === "error") {
+    toast.error(message)
+  } else {
+    toast.success(message)
+  }
 }
+
 
 // ✅ Success variant
 export function notifySuccess(message: string) {
