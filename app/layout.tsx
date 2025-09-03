@@ -1,17 +1,19 @@
 import "./globals.css";
-import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+
+export const metadata = {
+  title: "GeniusGrid",
+  description: "Next-gen ERP like SAP/Odoo"
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
