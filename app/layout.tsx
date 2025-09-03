@@ -1,11 +1,5 @@
-import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-
-export const metadata = {
-  title: "GeniusGrid",
-  description: "Next-gen ERP like SAP/Odoo"
-};
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "react-hot-toast"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,5 +11,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
