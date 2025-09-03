@@ -1,9 +1,8 @@
-"use client";
+import * as React from "react"
+import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
-export function Avatar({ name }: { name: string }) {
-  return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white">
-      {name.charAt(0).toUpperCase()}
-    </div>
-  );
-}
+const Avatar = AvatarPrimitive.Root
+const AvatarImage = AvatarPrimitive.Image
+const AvatarFallback = AvatarPrimitive.Fallback
+
+export { Avatar, AvatarImage, AvatarFallback }

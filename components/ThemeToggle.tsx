@@ -1,21 +1,12 @@
-"use client";
+"use client"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
 
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-
-export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
-
+export function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
   return (
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="rounded border px-2 py-1 text-sm"
-    >
-      {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
-    </button>
-  );
+    <Button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      {theme === "dark" ? "☀️" : "🌙"}
+    </Button>
+  )
 }
