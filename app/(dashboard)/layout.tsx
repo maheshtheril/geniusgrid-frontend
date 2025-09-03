@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "@/components/Sidebar";
-import { Topbar } from "@/components/Topbar";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ThemeProvider } from "@/components/theme-provider";
+import Sidebar from "@/components/Sidebar";        // ✅ default import
+import Topbar from "@/components/Topbar";          // ✅ default import
+import Breadcrumbs from "@/components/Breadcrumbs"; // ✅ default import
+import ThemeProvider from "@/components/theme-provider"; // ✅ default export
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -17,10 +21,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Main Content */}
         <div className="flex flex-1 flex-col overflow-hidden">
+          {/* Top Navigation Bar */}
           <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+
+          {/* Breadcrumbs */}
           <div className="px-4 pt-2">
             <Breadcrumbs />
           </div>
+
+          {/* Page Content */}
           <main className="flex-1 overflow-y-auto px-4 pb-6">{children}</main>
         </div>
       </div>
