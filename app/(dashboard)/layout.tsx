@@ -26,7 +26,7 @@ export default function DashboardLayout({
 
           {/* Breadcrumbs */}
           <div className="px-4 pt-2">
-            <Breadcrumbs />
+            <Breadcrumbs items={[{ label: "Dashboard", href: "/dashboard" }]} />
           </div>
 
           {/* Page Content */}
