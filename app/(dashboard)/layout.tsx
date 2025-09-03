@@ -4,7 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { ThemeProvider } from "@/components/theme-provider"; // ✅ FIXED
+import { ThemeProvider } from "@/components/theme-provider";
 
 export default function DashboardLayout({
   children,
@@ -22,7 +22,7 @@ export default function DashboardLayout({
         {/* Main Content */}
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Top Navigation Bar */}
-          <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+          <Topbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
           {/* Breadcrumbs */}
           <div className="px-4 pt-2">
