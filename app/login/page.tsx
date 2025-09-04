@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,23 +11,53 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [slug, setSlug] = useState("geniusgrid"); // default tenant slug
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      const res = await api.post(
-        "/auth/login",
-        { email, password, slug },
-        { withCredentials: true } // ✅ cookie saved
-      );
+      // 1) Login → get JWT (JSON, not cookie)
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, slug }),
+      });
 
-      console.log("✅ Login success:", res.data);
-      router.push("/dashboard");
+      if (!res.ok) {
+        const msg = await res.json().catch(() => ({}));
+        throw new Error(msg?.error || "Login failed");
+      }
+
+      const { token } = await res.json();
+      if (!token) throw new Error("No token returned");
+
+      // 2) Store token
+      localStorage.setItem("token", token);
+
+      // 3) (Optional) Fetch profile so dashboard has roles/permissions immediately
+      try {
+        const p = await fetch(`${API}/auth/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (p.ok) {
+          const profile = await p.json();
+          localStorage.setItem("userProfile", JSON.stringify(profile));
+        } else {
+          localStorage.removeItem("userProfile");
+        }
+      } catch {
+        // if profile fetch fails, still allow navigation; APIs will 401 if token is invalid
+      }
+
+      // 4) Go to dashboard
+      router.replace("/dashboard");
     } catch (err: any) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      setError(err.response?.data?.error || "Login failed");
+      setError(err?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,9 +100,10 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-60"
         >
-          Login
+          {loading ? "Signing in..." : "Login"}
         </button>
       </form>
     </div>
