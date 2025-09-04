@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: geniusgrid-frontend
+    env: node
+    plan: free
+    buildCommand: |
+      npm ci
+      npm run build
+    startCommand: |
+      npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Next.js will call the backend using this URL (auto-wired to the BE service URL)
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: geniusgrid-backend
+          property: url
