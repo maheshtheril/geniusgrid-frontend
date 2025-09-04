@@ -1,14 +1,30 @@
 import api from "@/lib/api";
 import { redirect } from "next/navigation";
 
-// Centralized logout helper
+/**
+ * We use HttpOnly cookies for auth, so client JS cannot/should not
+ * read or write the token directly. These shims keep legacy code compiling.
+ */
+export function getToken(): string | undefined {
+  // HttpOnly cookie is not readable by JS; return undefined.
+  return undefined;
+}
+
+export function saveToken(_token: string) {
+  // No-op: server sets HttpOnly cookie on /auth/login
+}
+
+export function clearToken() {
+  // No-op: server clears cookie on /auth/logout
+}
+
+/** Centralized logout helper */
 export async function logout() {
   try {
     await api.post("/auth/logout", {}, { withCredentials: true });
-  } catch (e) {
-    console.warn("Logout request failed, continuing anyway:", e);
+  } catch {
+    // ignore
   } finally {
-    // Clear local state if needed and send user to login
     redirect("/login");
   }
 }
