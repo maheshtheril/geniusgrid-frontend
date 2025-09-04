@@ -13,15 +13,50 @@ export default function Sidebar({
 }) {
   const [menu, setMenu] = useState<any[]>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
+  const [roles, setRoles] = useState<string[]>([]);
 
+  // ✅ Load user roles from localStorage
   useEffect(() => {
-    api.get("/admin/menu").then((res) => setMenu(res.data));
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const parsed = JSON.parse(userStr);
+        setRoles(parsed?.user?.roles || []);
+      }
+    } catch (err) {
+      console.error("❌ Failed to parse user roles from localStorage:", err);
+    }
+  }, []);
+
+  // ✅ Fetch menu from backend
+  useEffect(() => {
+    api
+      .get("/admin/menu")
+      .then((res) => setMenu(res.data))
+      .catch((err) => {
+        console.error("❌ Failed to load menu:", err);
+      });
   }, []);
 
   const toggleExpand = (id: string) => {
     setExpanded((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
+  };
+
+  // ✅ Filter menu by roles
+  const filterByRole = (items: any[]) => {
+    return items
+      .filter((item) => {
+        // If no roles defined → show to all
+        if (!item.roles || item.roles.length === 0) return true;
+        // Show if user has at least one allowed role
+        return item.roles.some((r: string) => roles.includes(r));
+      })
+      .map((item) => ({
+        ...item,
+        children: item.children ? filterByRole(item.children) : [],
+      }));
   };
 
   const renderMenu = (items: any[]) => (
@@ -52,14 +87,25 @@ export default function Sidebar({
     </ul>
   );
 
+  // ✅ Apply role filtering before rendering
+  const visibleMenu = filterByRole(menu);
+
   return (
     <aside
       className={`fixed top-0 left-0 z-40 h-full w-64 transform bg-white p-4 shadow-xl transition-transform dark:bg-slate-900 md:translate-x-0 ${
         open ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      <h1 className="mb-6 text-xl font-bold text-blue-600">GeniusGrid</h1>
-      <div className="space-y-2">{renderMenu(menu)}</div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-bold text-blue-600">GeniusGrid</h1>
+        <button
+          onClick={() => setOpen(false)}
+          className="rounded px-2 py-1 text-sm hover:bg-slate-200 dark:hover:bg-slate-700"
+        >
+          ✕
+        </button>
+      </div>
+      <div className="space-y-2">{renderMenu(visibleMenu)}</div>
     </aside>
   );
 }

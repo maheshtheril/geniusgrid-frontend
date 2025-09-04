@@ -1,18 +1,32 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { logout } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 
-export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
+export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
+  const { user } = useAuth({ redirectToLogin: true });
+
   return (
-    <header className="flex h-14 items-center justify-between border-b bg-white px-4 dark:bg-slate-900">
-      <button onClick={onMenuClick} className="md:hidden">
-        <Menu className="h-6 w-6" />
+    <div className="flex items-center justify-between bg-card p-4 shadow">
+      <button onClick={onMenuClick} className="text-lg font-bold">
+        ☰
       </button>
-      <h1 className="text-lg font-bold">GeniusGrid</h1>
-      <div className="flex items-center space-x-4">
-        {/* Placeholder avatar */}
-        <span className="h-8 w-8 rounded-full bg-slate-300 dark:bg-slate-700" />
+
+      <h1 className="text-xl font-semibold">GeniusGrid ERP</h1>
+
+      <div className="flex items-center gap-4">
+        {user && (
+          <span className="text-sm text-gray-700">
+            {user.name} ({user.email})
+          </span>
+        )}
+        <button
+          onClick={logout}
+          className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+        >
+          Logout
+        </button>
       </div>
-    </header>
+    </div>
   );
 }

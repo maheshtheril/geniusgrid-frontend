@@ -1,14 +1,3 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
-  "/signup/page": "app/signup/page.js",
-  "/(dashboard)/admin/tenants/page": "app/(dashboard)/admin/tenants/page.js",
-  "/(dashboard)/admin/menu/page": "app/(dashboard)/admin/menu/page.js",
-  "/(dashboard)/crm/accounts/page": "app/(dashboard)/crm/accounts/page.js",
-  "/(dashboard)/crm/contacts/page": "app/(dashboard)/crm/contacts/page.js",
-  "/(dashboard)/crm/leads/page": "app/(dashboard)/crm/leads/page.js",
-  "/(dashboard)/admin/roles/page": "app/(dashboard)/admin/roles/page.js",
-  "/(dashboard)/crm/deals/page": "app/(dashboard)/crm/deals/page.js",
-  "/(dashboard)/admin/users/page": "app/(dashboard)/admin/users/page.js"
+  "/login/page": "app/login/page.js"
 }

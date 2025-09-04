@@ -1,92 +1,79 @@
 "use client";
 
 import { useState } from "react";
-import api from "@/lib/api"; // central axios instance
-import { notify } from "@/lib/toast"; // ✅ unified notify object
+import { useRouter } from "next/navigation";
+import api from "@/lib/api";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [slug, setSlug] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [slug, setSlug] = useState("geniusgrid"); // default tenant slug
+  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setError("");
 
     try {
-      // ✅ Call backend login with slug
-      const res = await api.post("/auth/login", { email, password, slug });
-      const data = res.data;
+      const res = await api.post(
+        "/auth/login",
+        { email, password, slug },
+        { withCredentials: true }
+      );
 
-      if (!data?.token) {
-        notify.error(data.error || "Login failed");
-        return;
-      }
+      console.log("✅ Login success:", res.data);
 
-      notify.success("Login successful!");
-
-      // ✅ Store session
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
-
-      // ✅ Redirect based on role
-      const roles = data.user?.roles || [];
-      if (roles.includes("Admin")) {
-        window.location.href = "/dashboard/admin";
-      } else {
-        window.location.href = "/dashboard/user";
-      }
+      // Redirect to dashboard after login
+      router.push("/dashboard");
     } catch (err: any) {
-      console.error("Login error:", err);
-      notify.error(err?.response?.data?.error || "Server error. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("❌ Login error:", err.response?.data || err.message);
+      setError(err.response?.data?.error || "Login failed");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
+    <div className="flex min-h-screen items-center justify-center">
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-sm space-y-4 rounded-lg bg-card p-6 shadow"
+        className="bg-white shadow-md rounded-lg p-8 w-full max-w-md"
       >
-        <h1 className="text-center text-xl font-bold">Login</h1>
+        <h1 className="text-xl font-semibold mb-6">Login</h1>
 
-        {/* Tenant Slug field */}
-        <input
-          type="text"
-          placeholder="Tenant Slug (e.g. geniusgrid)"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value.trim().toLowerCase())}
-          required
-          className="w-full rounded border p-2"
-        />
+        {error && <p className="text-red-600 mb-4">{error}</p>}
 
         <input
           type="email"
           placeholder="Email"
+          className="border p-2 mb-4 w-full rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded border p-2"
         />
 
         <input
           type="password"
           placeholder="Password"
+          className="border p-2 mb-4 w-full rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full rounded border p-2"
+        />
+
+        <input
+          type="text"
+          placeholder="Tenant Slug"
+          className="border p-2 mb-6 w-full rounded"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          required
         />
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full rounded bg-primary py-2 font-semibold text-white disabled:opacity-50"
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         >
-          {loading ? "Logging in..." : "Login"}
+          Login
         </button>
       </form>
     </div>
