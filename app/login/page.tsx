@@ -19,12 +19,10 @@ export default function LoginPage() {
       const res = await api.post(
         "/auth/login",
         { email, password, slug },
-        { withCredentials: true }
+        { withCredentials: true } // ✅ cookie saved
       );
 
       console.log("✅ Login success:", res.data);
-
-      // Redirect to dashboard after login
       router.push("/dashboard");
     } catch (err: any) {
       console.error("❌ Login error:", err.response?.data || err.message);
