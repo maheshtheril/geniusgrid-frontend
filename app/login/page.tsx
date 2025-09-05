@@ -9,7 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [slug, setSlug] = useState("geniusgrid");
+  const [slug, setSlug] = useState("geniusgrid"); // default tenant slug
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,74 +19,42 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // 1) Login → get JWT (JSON, not cookie)
       const res = await fetch(`${API}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, slug }),
       });
 
-      // log status and text for debugging (remove in prod)
       if (!res.ok) {
-        let body = {};
-        try {
-          body = await res.json();
-        } catch (err) {
-          // if JSON parse failed, try text
-          const txt = await res.text().catch(() => "");
-          console.error("Login error body (text):", txt);
-          throw new Error(txt || `Login failed (status ${res.status})`);
-        }
-        console.error("Login error response:", body);
-        throw new Error(body?.error || body?.message || `Login failed (status ${res.status})`);
+        const msg = await res.json().catch(() => ({}));
+        throw new Error(msg?.error || "Login failed");
       }
 
-      const loginBody = await res.json();
-      console.log("login response body:", loginBody);
+      const { token } = await res.json();
+      if (!token) throw new Error("No token returned");
 
-      // accept multiple possible token keys
-      let token = loginBody.token || loginBody.accessToken || loginBody.jwt || loginBody.data?.token;
-      if (!token) {
-        console.error("No token found in login response", loginBody);
-        throw new Error("Login succeeded but no token returned by server");
-      }
-
-      // If server returns "Bearer <token>", strip it before storing/sending
-      if (typeof token === "string" && token.toLowerCase().startsWith("bearer ")) {
-        token = token.slice(7).trim();
-      }
-
+      // 2) Store token
       localStorage.setItem("token", token);
-      console.log("Stored token length:", token.length);
 
-      // Fetch profile — pass Authorization header properly
+      // 3) (Optional) Fetch profile so dashboard has roles/permissions immediately
       try {
         const p = await fetch(`${API}/auth/profile`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          // if your API uses cookies/sessions, add credentials: 'include'
-          // credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         if (p.ok) {
           const profile = await p.json();
-          console.log("profile:", profile);
           localStorage.setItem("userProfile", JSON.stringify(profile));
         } else {
-          const errBody = await p.text().catch(() => "");
-          console.warn("Profile fetch failed:", p.status, errBody);
-          // remove stale profile if any
           localStorage.removeItem("userProfile");
-          // optionally throw to show error to user:
-          // throw new Error(`Profile fetch failed: ${p.status}`);
         }
-      } catch (profileErr) {
-        console.warn("Profile fetch exception:", profileErr);
-        localStorage.removeItem("userProfile");
+      } catch {
+        // if profile fetch fails, still allow navigation; APIs will 401 if token is invalid
       }
 
+      // 4) Go to dashboard
       router.replace("/dashboard");
     } catch (err: any) {
-      console.error("Login flow error:", err);
       setError(err?.message || "Login failed");
     } finally {
       setLoading(false);
