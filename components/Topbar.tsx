@@ -1,7 +1,7 @@
 "use client";
 
-import { logout } from "@/lib/auth";
 import { useAuth } from "@/hooks/useAuth";
+import { logout } from "@/lib/auth";
 
 export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const { user } = useAuth({ redirectToLogin: true });
